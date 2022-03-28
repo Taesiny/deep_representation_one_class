@@ -33,7 +33,7 @@ def generate_flist(split):
       label = 1
     elif f.startswith('good'):
       label = 0
-    if f.endswith('.p'):
+    if f.endswith('.png'):
       g.write(f'{os.path.join(split, f)} {label}\n')
   g.close()
 
