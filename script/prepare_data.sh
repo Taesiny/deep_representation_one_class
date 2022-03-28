@@ -13,7 +13,7 @@
 # limitations under the License.
 
 #!/bin/bash
-# export DATA_DIR=[path/to/your/data]
+export DATA_DIR=/content/deep_representation_one_class
 
 # Dog-vs-cat dataset
 # 1. Download cats and dogs dataset
@@ -23,4 +23,4 @@ python script/prepare_dogvscat.py
 
 # CelebA dataset
 # 1. Run the following script to download and create numpy array
-python script/prepare_celeba.py
+#python script/prepare_celeba.py
