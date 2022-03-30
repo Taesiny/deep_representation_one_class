@@ -21,7 +21,7 @@
 #   {0..9..1} for fmnistood
 #   {0..1..1} for dogvscatood, 0 for cat, 1 for dog as inlier
 # Reproducing results in Table 2: 89.0 +- 0.7 on cifar10ood with OC-SVM
-DATA=cifar10ood
+DATA=owndataood
 METHOD=Contrastive
 SEED=1
 CATEGORY=0

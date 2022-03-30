@@ -32,6 +32,7 @@ from tqdm import trange
 from data.celeba import CelebA
 from data.cifar import CIFAROOD
 from data.dogvscat import DogVsCatOOD
+from data.own import OwndataOOD
 from data.fmnist import FashionMNISTOOD
 from model import resnet as model
 import util.metric as util_metric
@@ -39,7 +40,7 @@ from util.scheduler import CustomLearningRateSchedule as CustomSchedule
 
 _SUPPORTED_DATASET = frozenset([
     'cifar10ood', 'cifar20ood', 'cifar100ood', 'fashion_mnistood', 'fmnistood',
-    'dogvscatood', 'dvcood', 'celeba'
+    'dogvscatood','owndataood', 'dvcood', 'celeba'
 ])
 
 
@@ -223,6 +224,12 @@ class BaseTrain(object):
           dataset=dataset,
           category=category,
           input_shape=input_shape or (64, 64, 3))
+    elif dataset in ['owndataood', 'odood']:
+      dl = OwndataOOD(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
     elif dataset == 'celeba':
       dl = CelebA(
           root=root,
