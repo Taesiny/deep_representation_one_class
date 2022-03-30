@@ -19,7 +19,7 @@ export DATA_DIR=/content/deep_representation_one_class
 # 1. Download cats and dogs dataset
 #   https://www.kaggle.com/c/dogs-vs-cats/data?select=train.zip
 # 2. Run the following script to create numpy array
-python script/prepare_dogvscat.py
+python script/prepare_owndata.py
 
 # CelebA dataset
 # 1. Run the following script to download and create numpy array
