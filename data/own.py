@@ -48,8 +48,8 @@ class Owndata(CIFAR):
     test_image_pos = image_pos[randidx_pos[452:]]
     test_label_pos = label_pos[randidx_pos[452:]]
     randidx_neg = np.random.permutation(image_neg.shape[0])
-    train_image_neg = []
-    train_label_neg = []
+    train_image_neg = image_neg[randidx_neg[:0]]
+    train_label_neg = label_neg[randidx_neg[:0]]
     test_image_neg = image_neg[randidx_neg[:]]
     test_label_neg = label_neg[randidx_neg[:]]
     x_train = np.concatenate((train_image_pos, train_image_neg), axis=0)
