@@ -21,11 +21,11 @@
 #   {0..9..1} for fmnistood
 #   {0..1..1} for dogvscatood, 0 for cat, 1 for dog as inlier
 # Reproducing results in Table 2: 92.5 +- 0.6 on cifar10ood with OC-SVM
-DATA=cifar10ood
+DATA=owndataood
 METHOD=Contrastive
 SEED=1
 CATEGORY=0
-MODEL_DIR='.' # [/path/to/directory/to/save/model]
+MODEL_DIR='/content/drive/MyDrive/deep_representation/resnet_50' # [/path/to/directory/to/save/model]
 python train_and_eval_loop.py \
   --model_dir="${MODEL_DIR}" \
   --method=${METHOD} \
@@ -34,7 +34,7 @@ python train_and_eval_loop.py \
   --category=${CATEGORY} \
   --seed=${SEED} \
   --root='' \
-  --net_type=ResNet18 \
+  --net_type=ResNet50 \
   --net_width=1 \
   --latent_dim=0 \
   --aug_list="cnr0.5+hflip+jitter_b0.4_c0.4_s0.4_h0.4+gray0.2+blur0.5,+" \
@@ -46,7 +46,7 @@ python train_and_eval_loop.py \
   --momentum=0.9 \
   --weight_decay=0.0003 \
   --head_dims="512,512,512,512,512,512,512,512,128" \
-  --num_epoch=2048 \
+  --num_epoch=100 \
   --batch_size=32 \
   --temperature=0.2 \
   --distaug_type rot
