@@ -33,6 +33,12 @@ from data.celeba import CelebA
 from data.cifar import CIFAROOD
 from data.dogvscat import DogVsCatOOD
 from data.own import OwndataOOD
+from data.own_lf001 import OwndataOOD_lf001
+from data.own_lf002 import OwndataOOD_lf002
+from data.own_lf005 import OwndataOOD_lf005
+from data.own_lf010 import OwndataOOD_lf010
+from data.own_lf020 import OwndataOOD_lf020
+from data.own_lf050 import OwndataOOD_lf050
 from data.fmnist import FashionMNISTOOD
 from model import resnet as model
 import util.metric as util_metric
@@ -40,7 +46,7 @@ from util.scheduler import CustomLearningRateSchedule as CustomSchedule
 
 _SUPPORTED_DATASET = frozenset([
     'cifar10ood', 'cifar20ood', 'cifar100ood', 'fashion_mnistood', 'fmnistood',
-    'dogvscatood','owndataood', 'dvcood', 'celeba'
+    'dogvscatood','owndataood', 'owndataood_lf001','owndataood_lf002','owndataood_lf005','owndataood_lf010','owndataood_lf020','owndataood_lf050','dvcood', 'celeba'
 ])
 
 
@@ -230,6 +236,43 @@ class BaseTrain(object):
           dataset=dataset,
           category=category,
           input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf050', 'odood_lf050']:
+      dl = OwndataOOD_lf050(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf001', 'odood_lf001']:
+      dl = OwndataOOD_lf001(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf002', 'odood_lf002']:
+      dl = OwndataOOD_lf002(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf005', 'odood_lf005']:
+      dl = OwndataOOD_lf005(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf010', 'odood_lf010']:
+      dl = OwndataOOD_lf010(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+    elif dataset in ['owndataood_lf020', 'odood_lf020']:
+      dl = OwndataOOD_lf020(
+          root=root,
+          dataset=dataset,
+          category=category,
+          input_shape=input_shape or (32, 32, 3))
+
     elif dataset == 'celeba':
       dl = CelebA(
           root=root,
