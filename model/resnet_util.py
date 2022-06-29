@@ -161,10 +161,10 @@ def ResNet(stack_fn,
   inputs = img_input = tf.keras.layers.Input(shape=(None, None, 3))
 
   # Conv1 block.
-  if input_shape[0] in [128, 256]:
+  if input_shape[0] in [32, 256]:
     kernel_size, stride, maxpool = 7, 2, True
-  elif input_shape[0] in [32, 64]:
-    kernel_size, stride, maxpool = 3, 1, False
+  # elif input_shape[0] in [32, 64]:
+    # kernel_size, stride, maxpool = 3, 1, False
   else:
     raise NotImplementedError
   x = convnxn(
