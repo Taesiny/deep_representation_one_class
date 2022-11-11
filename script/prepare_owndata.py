@@ -87,4 +87,4 @@ def generate_numpy_array(split, size):
 
 
 if __name__ == '__main__':
-  generate_numpy_array(split='train', size=32)
+  generate_numpy_array(split='train', size=64)
