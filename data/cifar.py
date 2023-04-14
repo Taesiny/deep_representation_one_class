@@ -62,6 +62,47 @@ def get_random_eraser(p=1, s_l=0.01, s_h=0.49):
 
     return eraser
 
+
+
+def get_random_eraser1(p=1, s_l=0.01, s_h=0.49):
+    def eraser(input_img):
+        if input_img.ndim == 3:
+            img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 4:
+            img_b, img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 2:
+            img_h, img_w = input_img.shape
+
+        p_1 = np.random.rand()
+
+        if p_1 > p:
+            return input_img
+
+        while True:
+            s = np.random.uniform(s_l, s_h) * img_h * img_w
+            r = np.random.uniform(s_l, s_h) * img_h * img_w
+            w = int(np.sqrt(s))
+            h = int(np.sqrt(r))
+            left = np.random.randint(0, img_w)
+            top = np.random.randint(0, img_h)
+
+            if left + w <= img_w and top + h <= img_h:
+                break
+
+        angle = np.random.randint(0, 181)  # random angle in range [0, 180]
+        center = (int(left + w/2), int(top + h/2))
+        rot_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+
+        mask = np.zeros((img_h, img_w), dtype=np.uint8)
+        mask[top:top+h, left:left+w] = 1
+        rotated_mask = cv2.warpAffine(mask, rot_matrix, (img_w, img_h))
+
+        input_img[rotated_mask == 1] = 0
+
+        return input_img
+
+    return eraser
+
 def cutout_array_deterministic(data):
   """Rotate numpy array into 4 rotation angles.
 
@@ -72,6 +113,19 @@ def cutout_array_deterministic(data):
     A concatenation of the original and 3 rotations.
   """
   e= get_random_eraser()
+  return np.concatenate(
+      [data] + [e(data)], axis=0)
+
+def cutout_array_deterministic1(data):
+  """Rotate numpy array into 4 rotation angles.
+
+  Args:
+    data: data numpy array, B x H x W x C
+
+  Returns:
+    A concatenation of the original and 3 rotations.
+  """
+  e= get_random_eraser1()
   return np.concatenate(
       [data] + [e(data)], axis=0)
 
@@ -301,6 +355,10 @@ class CIFAR(object):
       elif distaug_type == 'cutout':
         aug_data = cutout_array_deterministic(train_data[0])
         lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
+      elif distaug_type == 'cutout_r':
+        aug_data = cutout_array_deterministic1(train_data[0])
+        lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
+
       elif distaug_type in [1, 2, 3, 4, 5, 6, 7, 8]:
         aug_data = geotrans_array_deterministic(train_data[0], distaug_type)
         lab_data = np.concatenate([train_data[1] for _ in range(distaug_type)],
