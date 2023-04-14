@@ -24,7 +24,7 @@ import tensorflow as tf
 
 from data.augment import retrieve_augment
 from data.data_util import BasicImageProcess
-
+import cv2
 
 import numpy as np
 
@@ -96,6 +96,9 @@ def get_random_eraser1(p=1, s_l=0.01, s_h=0.49):
         mask = np.zeros((img_h, img_w), dtype=np.uint8)
         mask[top:top+h, left:left+w] = 1
         rotated_mask = cv2.warpAffine(mask, rot_matrix, (img_w, img_h))
+
+        if rotated_mask.shape != input_img.shape[:2]:
+            rotated_mask = cv2.resize(rotated_mask, (input_img.shape[1], input_img.shape[0]))
 
         input_img[rotated_mask == 1] = 0
 
@@ -340,7 +343,7 @@ class CIFAR(object):
       # Applies offline distribution augmentation on train data.
       # Type of augmentation: Rotation (0, 90, 180, 270), horizontal or
       # vertical flip, combination of rotation and horizontal flips.
-      assert distaug_type in ['rot', 'hflip', 'vflip','cutout'] + [
+      assert distaug_type in ['rot', 'hflip', 'vflip','cutout','cutout_r'] + [
           1, 2, 3, 4, 5, 6, 7, 8
       ], f'{distaug_type} is not supported distribution augmentation type.'
       if distaug_type == 'rot':
