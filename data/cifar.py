@@ -105,6 +105,126 @@ def get_random_eraser1(p=1, s_l=0.01, s_h=0.49):
         return input_img
 
     return eraser
+from scipy import ndimage
+
+import numpy as np
+import cv2
+
+def get_random_eraser2(p=1, s_l=0.01, s_h=0.49):
+    def eraser(input_img):
+        if input_img.ndim == 3:
+            img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 4:
+            img_b, img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 2:
+            img_h, img_w = input_img.shape
+
+        p_1 = np.random.rand()
+
+        if p_1 > p:
+            return input_img
+
+        while True:
+            s = np.random.uniform(s_l, s_h) * img_h * img_w
+            r = np.random.uniform(s_l, s_h) * img_h * img_w
+            w = int(np.sqrt(s))
+            h = int(np.sqrt(r))
+            left = np.random.randint(0, img_w)
+            top = np.random.randint(0, img_h)
+
+            if left + w <= img_w and top + h <= img_h:
+                break
+
+        angle = np.random.randint(0, 181)  # random angle in range [0, 180]
+        center = (int(left + w/2), int(top + h/2))
+        rot_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+
+        mask = np.zeros((img_h, img_w), dtype=np.uint8)
+        mask[top:top+h, left:left+w] = 1
+        rotated_mask = cv2.warpAffine(mask, rot_matrix, (img_w, img_h))
+
+        if rotated_mask.shape != input_img.shape[:2]:
+            rotated_mask = cv2.resize(rotated_mask, (input_img.shape[1], input_img.shape[0]))
+
+        input_img[rotated_mask == 1] = 0
+
+        return input_img
+
+    return eraser
+
+
+
+import cv2
+import numpy as np
+def get_random_eraser3(p=1, s_l=0.01, s_h=0.49):
+    def eraser(input_img):
+        if input_img.ndim == 3:
+            img_h, img_w, img_c = input_img.shape
+
+        elif input_img.ndim == 4:
+            img_b, img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 2:
+            img_h, img_w = input_img.shape
+
+        p_1 = np.random.rand()
+
+        if p_1 > p:
+            return input_img
+
+        while True:
+            s = np.random.uniform(s_l, s_h) * img_h * img_w
+            r = np.random.uniform(s_l, s_h) * img_h * img_w
+            w = int(np.sqrt(s))
+            h = int(np.sqrt(r))
+            left = np.random.randint(0, img_w)
+            top = np.random.randint(0, img_h)
+
+            if left + w <= img_w and top + h <= img_h:
+                break
+
+        input_img[top:top + h, left:left + w] = 128
+
+        return input_img
+
+    return eraser
+
+
+def get_random_eraser4(p=1, s_l=0.01, s_h=0.49):
+    def eraser(input_img):
+        if input_img.ndim == 3:
+            img_h, img_w, img_c = input_img.shape
+
+        elif input_img.ndim == 4:
+            img_b, img_h, img_w, img_c = input_img.shape
+        elif input_img.ndim == 2:
+            img_h, img_w = input_img.shape
+
+        p_1 = np.random.rand()
+
+        if p_1 > p:
+            return input_img
+
+        while True:
+            s = np.random.uniform(s_l, s_h) * img_h * img_w
+            r = np.random.uniform(s_l, s_h) * img_h * img_w
+            w = int(np.sqrt(s))
+            h = int(np.sqrt(r))
+            left = np.random.randint(0, img_w)
+            top = np.random.randint(0, img_h)
+
+            if left + w <= img_w and top + h <= img_h:
+                break
+
+        input_img[top:top + h, left:left + w] = 128
+
+        return input_img
+
+    return eraser
+
+
+
+
+
 
 def cutout_array_deterministic(data):
   """Rotate numpy array into 4 rotation angles.
@@ -129,6 +249,44 @@ def cutout_array_deterministic1(data):
     A concatenation of the original and 3 rotations.
   """
   e= get_random_eraser1()
+  return np.concatenate(
+      [data] + [e(data)], axis=0)
+def cutout_array_deterministic2(data):
+  """Rotate numpy array into 4 rotation angles.
+
+  Args:
+    data: data numpy array, B x H x W x C
+
+  Returns:
+    A concatenation of the original and 3 rotations.
+  """
+  e= get_random_eraser2()
+  return np.concatenate(
+      [data] + [e(data)], axis=0)
+
+def cutout_array_deterministic3(data):
+  """Rotate numpy array into 4 rotation angles.
+
+  Args:
+    data: data numpy array, B x H x W x C
+
+  Returns:
+    A concatenation of the original and 3 rotations.
+  """
+  e= get_random_eraser3()
+  return np.concatenate(
+      [data] + [e(data)], axis=0)
+
+def cutout_array_deterministic4(data):
+  """Rotate numpy array into 4 rotation angles.
+
+  Args:
+    data: data numpy array, B x H x W x C
+
+  Returns:
+    A concatenation of the original and 3 rotations.
+  """
+  e= get_random_eraser4()
   return np.concatenate(
       [data] + [e(data)], axis=0)
 
@@ -343,7 +501,7 @@ class CIFAR(object):
       # Applies offline distribution augmentation on train data.
       # Type of augmentation: Rotation (0, 90, 180, 270), horizontal or
       # vertical flip, combination of rotation and horizontal flips.
-      assert distaug_type in ['rot', 'hflip', 'vflip','cutout','cutout_r'] + [
+      assert distaug_type in ['rot', 'hflip', 'vflip','cutout','cutout_r','circle','gray','c2'] + [
           1, 2, 3, 4, 5, 6, 7, 8
       ], f'{distaug_type} is not supported distribution augmentation type.'
       if distaug_type == 'rot':
@@ -360,6 +518,15 @@ class CIFAR(object):
         lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
       elif distaug_type == 'cutout_r':
         aug_data = cutout_array_deterministic1(train_data[0])
+        lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
+      elif distaug_type == 'circle':
+        aug_data = cutout_array_deterministic2(train_data[0])
+        lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
+      elif distaug_type == 'gray':
+        aug_data = cutout_array_deterministic3(train_data[0])
+        lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
+      elif distaug_type == 'c2':
+        aug_data = cutout_array_deterministic3(train_data[0])
         lab_data = np.concatenate([train_data[1] for _ in range(2)], axis=0)
 
       elif distaug_type in [1, 2, 3, 4, 5, 6, 7, 8]:
